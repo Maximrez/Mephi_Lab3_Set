@@ -30,6 +30,10 @@ struct MySet {
         out << "}";
     }
 
+    void remove(const T &target) {
+        data.remove(target);
+    }
+
     [[nodiscard]] vector<T> getValues() const {
         return data.getValues();
     }

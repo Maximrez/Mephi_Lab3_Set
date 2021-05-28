@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <cstdlib>
+#include "MySet.hpp"
 
 void write_results(pair<int, int> time, const string &file_name, const string &test_name) {
     int node_time = time.first;
