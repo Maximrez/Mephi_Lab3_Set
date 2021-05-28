@@ -2,7 +2,8 @@
 
 #include <fstream>
 #include <cstdlib>
-#include "MySet.hpp"
+#include "Set_Node.hpp"
+#include <iomanip>
 
 void write_results(pair<int, int> time, const string &file_name, const string &test_name) {
     int node_time = time.first;
@@ -15,12 +16,12 @@ void write_results(pair<int, int> time, const string &file_name, const string &t
     cout << "Array: " << array_time << " microseconds" << endl;
     fout << "Array: " << array_time << " microseconds" << endl;
     if (node_time >= array_time) {
-        cout << "Array is " << node_time / array_time << " times faster than a nodes!" << endl;
-        fout << "Array is " << node_time / array_time << " times faster than a nodes!" << endl;
+        cout << "Array is " << fixed << setprecision(1) << static_cast<long double>(node_time) / array_time << " times faster than a nodes!" << endl;
+        fout << "Array is " << fixed << setprecision(1) << static_cast<long double>(node_time) / array_time << " times faster than a nodes!" << endl;
     }
     if (node_time < array_time) {
-        cout << "Nodes is " << array_time / node_time << " times faster than a array!" << endl;
-        fout << "Nodes is " << array_time / node_time << " times faster than a array!" << endl;
+        cout << "Nodes is " << fixed << setprecision(1) << static_cast<long double>(array_time) / node_time << " times faster than a array!" << endl;
+        fout << "Nodes is " << fixed << setprecision(1) << static_cast<long double>(array_time) / node_time << " times faster than a array!" << endl;
     }
     cout << endl;
     fout << endl;

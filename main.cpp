@@ -1,25 +1,19 @@
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include <string>
-#include "tests.hpp"
 #include "functions.hpp"
-#include "MySet.hpp"
-
-using namespace std;
+#include "Set_Array.hpp"
+#include "tests.hpp"
 
 int main() {
     string str;
     int s1 = 0;
-    while (s1 != 3) {
-        cout << endl << "Select an action:" << endl << "1 - create set" << endl << "2 - run tests" << endl << "3 - exit" << endl;
+    while (s1 != 4) {
+        cout << endl << "Select an action:" << endl << "1 - create set" << endl << "2 - create heap" << endl << "3 - run tests" << endl << "4 - exit" << endl;
         cin >> s1;
         switch (s1) {
             case 1: {
                 cout << "Write an items:" << endl;
                 getline(cin, str);
                 getline(cin, str);
-                MySet<int> st = setFromString(str);
+                Set_Node<int> st = setFromString(str);
                 int s2 = -1, item;
                 while (s2 != 0) {
                     cout << endl << "Your set:" << endl;
@@ -59,7 +53,7 @@ int main() {
                             cout << "Write an items:" << endl;
                             getline(cin, str);
                             getline(cin, str);
-                            MySet<int> new_st = setFromString(str);
+                            Set_Node<int> new_st = setFromString(str);
                             cout << endl << "New set:" << endl;
                             new_st.print(cout);
                             cout << endl;
@@ -70,7 +64,7 @@ int main() {
                             cout << "Write an items:" << endl;
                             getline(cin, str);
                             getline(cin, str);
-                            MySet<int> new_st = setFromString(str);
+                            Set_Node<int> new_st = setFromString(str);
                             cout << endl << "New set:" << endl;
                             new_st.print(cout);
                             cout << endl;
@@ -81,7 +75,7 @@ int main() {
                             cout << "Write an items:" << endl;
                             getline(cin, str);
                             getline(cin, str);
-                            MySet<int> new_st = setFromString(str);
+                            Set_Node<int> new_st = setFromString(str);
                             cout << endl << "New set:" << endl;
                             new_st.print(cout);
                             cout << endl;
@@ -92,7 +86,7 @@ int main() {
                             cout << "Write an items:" << endl;
                             getline(cin, str);
                             getline(cin, str);
-                            MySet<int> new_st = setFromString(str);
+                            Set_Node<int> new_st = setFromString(str);
                             cout << endl << "New set:" << endl;
                             new_st.print(cout);
                             cout << endl << endl;
@@ -113,20 +107,146 @@ int main() {
                 break;
             }
             case 2: {
+                cout << "Write an items:" << endl;
+                getline(cin, str);
+                getline(cin, str);
+                Heap_Node<int> hp = heapFromString(str);
+                int s2 = -1, item;
+                while (s2 != 0) {
+                    cout << endl << "Your heap:" << endl;
+                    hp.NLR(cout);
+                    cout << endl << endl << "Select the action with heap:" << endl
+                         << "1 - insert element" << endl
+                         << "2 - search element" << endl
+                         << "3 - remove element" << endl
+                         << "4 - make subheap" << endl
+                         << "5 - search subheap" << endl
+                         << "6 - trip a graph" << endl
+                         << "0 - exit" << endl;
+                    cin >> s2;
+                    switch (s2) {
+                        case 1: {
+                            cout << "item: ";
+                            cin >> item;
+                            hp.insert(item);
+                            break;
+                        }
+                        case 2: {
+                            cout << "item: ";
+                            cin >> item;
+                            if (hp.search(item)) cout << "TRUE";
+                            else cout << "FALSE";
+                            cout << endl;
+                            break;
+                        }
+                        case 3: {
+                            cout << "item: ";
+                            cin >> item;
+                            hp.remove(item);
+                            break;
+                        }
+                        case 4: {
+                            cout << "item: ";
+                            cin >> item;
+                            hp = hp.subHeap(item);
+                            break;
+                        }
+                        case 5: {
+                            cout << "Write an items:" << endl;
+                            getline(cin, str);
+                            getline(cin, str);
+                            Heap_Node<int> new_hp = heapFromString(str);
+                            cout << endl << "New heap:" << endl;
+                            new_hp.NLR(cout);
+                            cout << endl;
+                            if (hp.searchHeap(new_hp)) cout << "TRUE";
+                            else cout << "FALSE";
+                            cout << endl;
+                            break;
+                        }
+                        case 6: {
+                            int s3 = -1;
+                            while (s3 != 0) {
+                                cout << endl << "Select:" << endl
+                                     << "1 - NLR" << endl
+                                     << "2 - NRL" << endl
+                                     << "3 - LRN" << endl
+                                     << "4 - LNR" << endl
+                                     << "5 - RLN" << endl
+                                     << "6 - RNL" << endl
+                                     << "0 - exit" << endl;
+                                cin >> s3;
+
+                                switch (s3) {
+                                    case 1: {
+                                        hp.NLR(cout);
+                                        s3 = 0;
+                                        break;
+                                    }
+                                    case 2: {
+                                        hp.NRL(cout);
+                                        s3 = 0;
+                                        break;
+                                    }
+                                    case 3: {
+                                        hp.LRN(cout);
+                                        s3 = 0;
+                                        break;
+                                    }
+                                    case 4: {
+                                        hp.LNR(cout);
+                                        s3 = 0;
+                                        break;
+                                    }
+                                    case 5: {
+                                        hp.RLN(cout);
+                                        s3 = 0;
+                                        break;
+                                    }
+                                    case 6: {
+                                        hp.RNL(cout);
+                                        s3 = 0;
+                                        break;
+                                    }
+                                    case 0: {
+                                        break;
+                                    }
+                                    default: {
+                                        printf("Enter a number from the list!\n");
+                                        break;
+                                    }
+                                }
+                            }
+                            cout << endl;
+                            break;
+                        }
+                        case 0: {
+                            break;
+                        }
+                        default: {
+                            printf("Enter a number from the list!\n");
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+            case 3: {
                 const string file_name = "logs.txt";
-                ofstream fout(file_name, ios_base::trunc);
-                fout.close();
 
-                write_results(test_create_int(10000), file_name, "TEST CREATE INT (N=10000)");
-                write_results(test_create_double(10000), file_name, "TEST CREATE DOUBLE (N=10000)");
-
-                write_results(test_insert_int(10000), file_name, "TEST INSERT INT (N=10000)");
-                write_results(test_insert_double(10000), file_name, "TEST INSERT DOUBLE (N=10000)");
+                ofstream file(file_name, ios_base::trunc);
+                file.close();
+                write_results(test_create(1e4), file_name, "Test_Create");
+                write_results(test_insert(1e4), file_name, "Test_Insert");
+                write_results(test_search(1e4), file_name, "Test_Search");
+                write_results(test_sum(1e4), file_name, "Test_Sum");
+                write_results(test_subtraction(1e4), file_name, "Test_Subtraction");
+                write_results(test_intersection(1e4), file_name, "Test_Intersection");
 
                 cout << "Tests successfully saved to " << file_name << endl;
                 break;
             }
-            case 3 : {
+            case 4 : {
                 break;
             }
             default: {

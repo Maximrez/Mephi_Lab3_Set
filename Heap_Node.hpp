@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include "Heap_Array.hpp"
 
 using namespace std;
 
@@ -15,7 +16,8 @@ struct Node {
     Node<T> *left = nullptr;
     Node<T> *right = nullptr;
 
-    Node(T value1, Node<T> *parent1, Node<T> *left1, Node<T> *right1) : value(value1), parent(parent1), left(left1), right(right1) {}
+    Node(T value1, Node<T> *parent1, Node<T> *left1, Node<T> *right1) : value(value1), parent(parent1), left(left1),
+                                                                        right(right1) {}
 
     Node *search(T target) {
         if (target == value)
@@ -39,11 +41,13 @@ struct Node {
             if (right && (right->value < left->value)) swap(left, right);
             return;
         }
-        if (target <= left->value)
-            return left->insert(target);
         if (!right) {
             right = new Node<T>(target, this, nullptr, nullptr);
             if (right->value < left->value) swap(left, right);
+            return;
+        }
+        if (target <= left->value) {
+            left->insert(target);
             return;
         }
         if (target <= right->value) {
@@ -137,34 +141,42 @@ struct Node {
 
     ~Node() {
         if (parent) {
-            if (parent->left == this) parent->left = nullptr;
-            if (parent->right == this) parent->right = nullptr;
+            if (parent->left && parent->left == this) parent->left = nullptr;
+            if (parent->right && parent->right == this) parent->right = nullptr;
+            parent = nullptr;
         }
         parent = nullptr;
-        left = nullptr;
-        right = nullptr;
-    };
+        if (left) {
+            left->parent = nullptr;
+            left = nullptr;
+        }
+        if (right) {
+            right->parent = nullptr;
+            right = nullptr;
+        }
+    }
+//    ~Node() = default;
 };
 
 template<class T>
-struct Heap {
+struct Heap_Node {
     Node<T> *root = nullptr;
 
-    Heap() : root(nullptr) {}
+    Heap_Node() : root(nullptr) {}
 
-    explicit Heap(const T *list, int size) {
+    explicit Heap_Node(const T *list, int size) {
         for (int i = 0; i < size; i++) {
             insert(list[i]);
         }
     }
 
-    explicit Heap(const vector<T> &vec) {
+    explicit Heap_Node(const vector<T> &vec) {
         for (T item: vec) {
             insert(item);
         }
     }
 
-    Heap(const Heap<T> &heap) {
+    Heap_Node(const Heap_Node<T> &heap) {
         if (heap.root) {
             root = new Node<T>(heap.root->value, heap.root->parent, heap.root->left, heap.root->right);
             if (root->left)
@@ -188,7 +200,7 @@ struct Heap {
             copyChild(*(item.right), *node, 0);
     }
 
-    [[nodiscard]] bool searchHeap(const Heap<T> &heap) const {
+    [[nodiscard]] bool searchHeap(const Heap_Node<T> &heap) const {
         Node<T> *node = root->search(heap.root->value);
         if (!node)
             return false;
@@ -211,26 +223,50 @@ struct Heap {
             auto *new_node = new Node<T>(target, nullptr, root, nullptr);
             root->parent = new_node;
             root = new_node;
-
         }
     }
 
     void remove(const T &target) {
+        if (!root) return;
         if (target > root->value) return;
         Node<T> *node = root->search(target);
-        while (node->left && node->right) {
-            swap(node->value, node->right->value);
-            node = node->right;
+        if (node) {
+            while (node->left && node->right) {
+                swap(node->value, node->right->value);
+                node = node->right;
+            }
+            if (node->parent) {
+                if (node->left) {
+                    if (node->parent->right && node->parent->right == node) {
+                        node->parent->right = node->left;
+                        node->left->parent = node->parent;
+                    } else {
+                        node->parent->left = node->left;
+                        node->left->parent = node->parent;
+                    }
+                }
+                if (node->right) {
+                    if (node->parent->right && node->parent->right == node) {
+                        node->parent->right = node->right;
+                        node->right->parent = node->parent;
+                    } else {
+                        node->parent->left = node->right;
+                        node->right->parent = node->parent;
+                    }
+                }
+            } else {
+                if (!node->left && !node->right) {
+                    root = nullptr;
+                }
+                if (node->left) {
+                    root = node->left;
+                }
+                if (node->right) {
+                    root = node->right;
+                }
+            }
+            delete node;
         }
-        if (node->left) {
-            node->parent->right = node->left;
-            node->left->parent = node->parent;
-        }
-        if (node->right) {
-            node->parent->right = node->right;
-            node->right->parent = node->parent;
-        }
-        delete node;
     }
 
 //    void print(ostream &out) const {
@@ -267,9 +303,9 @@ struct Heap {
         return vector;
     }
 
-    [[nodiscard]] Heap<T> &subHeap(const T &target) const {
+    [[nodiscard]] Heap_Node<T> &subHeap(const T &target) const {
         Node<T> *node = root->search(target);
-        auto *sub_heap = new Heap<T>();
+        auto *sub_heap = new Heap_Node<T>();
         if (node) {
             auto *new_root = new Node<T>(node->value, nullptr, node->left, node->right);
             sub_heap->root = new_root;
@@ -281,7 +317,7 @@ struct Heap {
         return *sub_heap;
     }
 
-    friend bool operator==(const Heap<T> &heap, set<T> st) {
+    friend bool operator==(const Heap_Node<T> &heap, set<T> st) {
         auto values = heap.getValues();
         set<T> heap_set(values.begin(), values.end());
         if (heap_set == st) {
@@ -290,24 +326,15 @@ struct Heap {
         return false;
     }
 
-    friend bool operator!=(const Heap<T> &heap, set<T> st) {
+    friend bool operator!=(const Heap_Node<T> &heap, set<T> st) {
         return !(heap == st);
     }
 
-    ~Heap() = default;
+    ~Heap_Node() = default;
 };
 
-int convert(const string &str) {
-    int result = 0, k = 1;
-    for (int i = int(str.size()) - 1; i >= 0; i--) {
-        result += (str[i] - '0') * k;
-        k *= 10;
-    }
-    return result;
-}
-
-Heap<int> &heapFromString(const string &str) {
-    auto *heap = new Heap<int>();
+Heap_Node<int> &heapFromString(const string &str) {
+    auto *heap = new Heap_Node<int>();
     int item;
     for (int i = 0; i < str.size(); i++) {
         int j = i;

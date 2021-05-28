@@ -1,20 +1,20 @@
 #pragma once
 
-#include "Heap.hpp"
+#include "Heap_Node.hpp"
 
 using namespace std;
 
 template<class T>
-struct MySet {
-    Heap<T> data;
+struct Set_Node {
+    Heap_Node<T> data;
 
-    MySet() : data() {}
+    Set_Node() : data() {}
 
-    explicit MySet(Heap<T> *heap) : data(*heap) {}
+    explicit Set_Node(Heap_Node<T> *heap) : data(*heap) {}
 
-    explicit MySet(const vector<T> &vec) : data(vec) {}
+    explicit Set_Node(const vector<T> &vec) : data(vec) {}
 
-    MySet(const MySet<T> &st) : data(st.data) {}
+    Set_Node(const Set_Node<T> &st) : data(st.data) {}
 
     [[nodiscard]] bool search(const T &target) const {
         return data.search(target);
@@ -38,7 +38,11 @@ struct MySet {
         return data.getValues();
     }
 
-    [[nodiscard]] bool include(const MySet<T> st) const {
+    [[nodiscard]] int getSize() const {
+        return getValues().size();
+    }
+
+    [[nodiscard]] bool include(const Set_Node<T> st) const {
         auto values = st.getValues();
         for (T item: values)
             if (!search(item))
@@ -46,8 +50,8 @@ struct MySet {
         return true;
     }
 
-    [[nodiscard]] MySet<T> &intersection(const MySet<T> &st) const {
-        auto *intersection = new MySet<T>();
+    [[nodiscard]] Set_Node<T> &intersection(const Set_Node<T> &st) const {
+        auto *intersection = new Set_Node<T>();
         vector<T> values = data.getValues();
         for (T item: values)
             if (st.search(item))
@@ -55,8 +59,8 @@ struct MySet {
         return *intersection;
     }
 
-    [[nodiscard]] MySet<T> &unification(const MySet<T> &st) const {
-        auto *unity = new MySet<T>();
+    [[nodiscard]] Set_Node<T> &unification(const Set_Node<T> &st) const {
+        auto *unity = new Set_Node<T>();
         vector<T> values1 = data.getValues();
         vector<T> values2 = st.data.getValues();
         for (T item: values1)
@@ -66,8 +70,8 @@ struct MySet {
         return *unity;
     }
 
-    [[nodiscard]] MySet<T> &subtraction(const MySet<T> &st) const {
-        auto *sub = new MySet<T>();
+    [[nodiscard]] Set_Node<T> &subtraction(const Set_Node<T> &st) const {
+        auto *sub = new Set_Node<T>();
         vector<T> values = data.getValues();
         for (T item: values)
             if (!st.search(item))
@@ -75,19 +79,19 @@ struct MySet {
         return *sub;
     }
 
-    const MySet &operator*(const MySet &st) const {
+    const Set_Node &operator*(const Set_Node &st) const {
         return intersection(st);
     }
 
-    const MySet &operator+(const MySet &st) const {
+    const Set_Node &operator+(const Set_Node &st) const {
         return unification(st);
     }
 
-    const MySet &operator-(const MySet &st) const {
+    const Set_Node &operator-(const Set_Node &st) const {
         return subtraction(st);
     }
 
-    friend bool operator==(const MySet<T> &st1, const MySet<T> &st2) {
+    friend bool operator==(const Set_Node<T> &st1, const Set_Node<T> &st2) {
         auto values1 = st1.data.getValues();
         auto values2 = st2.data.getValues();
         sort(values1.begin(), values1.end());
@@ -95,15 +99,25 @@ struct MySet {
         return values1 == values2;
     }
 
-    friend bool operator!=(const MySet<T> &st1, const MySet<T> &st2) {
+    friend bool operator!=(const Set_Node<T> &st1, const Set_Node<T> &st2) {
         return !(st1 == st2);
     }
 
-    ~MySet() = default;
+    friend bool operator==(const Set_Node<T> &st1, const set<T> &st2) {
+        auto values = st1.data.getValues();
+        set<T> new_st1(values.begin(), values.end());
+        return new_st1 == st2;
+    }
+
+    friend bool operator!=(const Set_Node<T> &st1, const set<T> &st2) {
+        return !(st1 == st2);
+    }
+
+    ~Set_Node() = default;
 };
 
-MySet<int> &setFromString(const string &str) {
-    auto *st = new MySet<int>();
+Set_Node<int> &setFromString(const string &str) {
+    auto *st = new Set_Node<int>();
     int item;
     for (int i = 0; i < str.size(); i++) {
         int j = i;
