@@ -1,11 +1,12 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
-#include <cstring>
-#include "Heap.hpp"
+#include <string>
 #include "tests.hpp"
 #include "functions.hpp"
 #include "MySet.hpp"
+
+using namespace std;
 
 int main() {
     string str;
@@ -15,14 +16,15 @@ int main() {
         cin >> s1;
         switch (s1) {
             case 1: {
-                cout << "Write an items: ";
-                cin >> str;
+                cout << "Write an items:" << endl;
+                getline(cin, str);
+                getline(cin, str);
                 MySet<int> st = setFromString(str);
-                int s2 = -1, index, item;
+                int s2 = -1, item;
                 while (s2 != 0) {
                     cout << endl << "Your set:" << endl;
-                    st.print();
-                    cout << endl << "Select the action with set:" << endl
+                    st.print(cout);
+                    cout << endl << endl << "Select the action with set:" << endl
                          << "1 - insert element" << endl
                          << "2 - search element" << endl
                          << "3 - remove element" << endl
@@ -42,9 +44,9 @@ int main() {
                         case 2: {
                             cout << "item: ";
                             cin >> item;
-                            cout << endl;
                             if (st.search(item)) cout << "TRUE";
                             else cout << "FALSE";
+                            cout << endl;
                             break;
                         }
                         case 3: {
@@ -54,50 +56,49 @@ int main() {
                             break;
                         }
                         case 4: {
-                            cout << "index: ";
-                            cin >> index;
-                            while ((index < 0) or (index > polynomial.GetSize())) {
-                                cout << "Index out of range!" << endl << "index: ";
-                                cin >> index;
-                            }
-                            cout << "new value: ";
-                            cin >> item;
-                            polynomial.InsertAt(item, index);
+                            cout << "Write an items:" << endl;
+                            getline(cin, str);
+                            getline(cin, str);
+                            MySet<int> new_st = setFromString(str);
+                            cout << endl << "New set:" << endl;
+                            new_st.print(cout);
+                            cout << endl;
+                            st = st.intersection(new_st);
                             break;
                         }
                         case 5: {
-                            Polynomial<int> new_polynomial = create_polynomial_int();
-                            cout << endl << "New polynomial:" << endl;
-                            new_polynomial.Print();
-                            polynomial = polynomial.AddPolynomial(new_polynomial);
+                            cout << "Write an items:" << endl;
+                            getline(cin, str);
+                            getline(cin, str);
+                            MySet<int> new_st = setFromString(str);
+                            cout << endl << "New set:" << endl;
+                            new_st.print(cout);
+                            cout << endl;
+                            st = st.unification(new_st);
                             break;
                         }
                         case 6: {
-                            int scalar;
-                            cout << "scalar: ";
-                            cin >> scalar;
-                            polynomial = polynomial.MulScalar(scalar);
+                            cout << "Write an items:" << endl;
+                            getline(cin, str);
+                            getline(cin, str);
+                            MySet<int> new_st = setFromString(str);
+                            cout << endl << "New set:" << endl;
+                            new_st.print(cout);
+                            cout << endl;
+                            st = st.subtraction(new_st);
                             break;
                         }
                         case 7: {
-                            Polynomial<int> new_polynomial = create_polynomial_int();
-                            cout << endl << "New polynomial:" << endl;
-                            new_polynomial.Print();
-                            polynomial = polynomial.MulPolynomial(new_polynomial);
-                            break;
-                        }
-                        case 8: {
-                            Polynomial<int> new_polynomial = create_polynomial_int();
-                            cout << endl << "New polynomial:" << endl;
-                            new_polynomial.Print();
-                            polynomial = polynomial.Composition(new_polynomial);
-                            break;
-                        }
-                        case 9: {
-                            int value;
-                            cout << "value: ";
-                            cin >> value;
-                            cout << "result: " << polynomial.CalculatingValue(value) << endl;
+                            cout << "Write an items:" << endl;
+                            getline(cin, str);
+                            getline(cin, str);
+                            MySet<int> new_st = setFromString(str);
+                            cout << endl << "New set:" << endl;
+                            new_st.print(cout);
+                            cout << endl << endl;
+                            if (st.include(new_st)) cout << "TRUE";
+                            else cout << "FALSE";
+                            cout << endl;
                             break;
                         }
                         case 0: {

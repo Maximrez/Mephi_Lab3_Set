@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <set>
 
 using namespace std;
 
@@ -164,11 +165,13 @@ struct Heap {
     }
 
     Heap(const Heap<T> &heap) {
-        root = new Node<T>(heap.root->value, heap.root->parent, heap.root->left, heap.root->right);
-        if (root->left)
-            copyChild(*(heap.root->left), *root, 1);
-        if (root->right)
-            copyChild(*(heap.root->right), *root, 0);
+        if (heap.root) {
+            root = new Node<T>(heap.root->value, heap.root->parent, heap.root->left, heap.root->right);
+            if (root->left)
+                copyChild(*(heap.root->left), *root, 1);
+            if (root->right)
+                copyChild(*(heap.root->right), *root, 0);
+        }
     }
 
     void copyChild(Node<T> &item, Node<T> &p, int if_left) const {
@@ -278,16 +281,16 @@ struct Heap {
         return *sub_heap;
     }
 
-    friend bool operator==(const Heap<T> &heap, set <T> st) {
+    friend bool operator==(const Heap<T> &heap, set<T> st) {
         auto values = heap.getValues();
-        set <T> heap_set(values.begin(), values.end());
+        set<T> heap_set(values.begin(), values.end());
         if (heap_set == st) {
             return true;
         }
         return false;
     }
 
-    friend bool operator!=(const Heap<T> &heap, set <T> st) {
+    friend bool operator!=(const Heap<T> &heap, set<T> st) {
         return !(heap == st);
     }
 
