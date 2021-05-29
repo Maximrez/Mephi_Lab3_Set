@@ -139,8 +139,10 @@ pair<int, int> test_sum(const int n) {
     }
     Set_Node<int> set_node(values);
     Set_Array<int> set_array(values);
-    Set_Node<int> sub_node(values);
-    Set_Array<int> sub_array(values);
+
+    Set_Node<int> sub_node(val);
+    Set_Array<int> sub_array(val);
+
     auto startTime = chrono::steady_clock::now();
     set_node + sub_node;
     auto endTime = chrono::steady_clock::now();
@@ -151,6 +153,9 @@ pair<int, int> test_sum(const int n) {
     endTime = chrono::steady_clock::now();
     int array_time = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
 
+    set1.insert(set2.begin(), set2.end());
+    assert(set_node + sub_node == set1);
+    assert(set_array + sub_array == set1);
     return {node_time, array_time};
 }
 
@@ -168,10 +173,13 @@ pair<int, int> test_subtraction(const int n) {
         val[i] = distribution(generator);
         set2.insert(val[i]);
     }
+
     Set_Node<int> set_node(values);
     Set_Array<int> set_array(values);
-    Set_Node<int> sub_node(values);
-    Set_Array<int> sub_array(values);
+
+    Set_Node<int> sub_node(val);
+    Set_Array<int> sub_array(val);
+
     auto startTime = chrono::steady_clock::now();
     set_node - sub_node;
     auto endTime = chrono::steady_clock::now();
@@ -201,8 +209,10 @@ pair<int, int> test_intersection(const int n) {
     }
     Set_Node<int> set_node(values);
     Set_Array<int> set_array(values);
-    Set_Node<int> sub_node(values);
-    Set_Array<int> sub_array(values);
+
+    Set_Node<int> sub_node(val);
+    Set_Array<int> sub_array(val);
+
     auto startTime = chrono::steady_clock::now();
     set_node * sub_node;
     auto endTime = chrono::steady_clock::now();

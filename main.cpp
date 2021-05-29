@@ -236,12 +236,12 @@ int main() {
 
                 ofstream file(file_name, ios_base::trunc);
                 file.close();
-                write_results(test_create(1e4), file_name, "Test_Create");
-                write_results(test_insert(1e4), file_name, "Test_Insert");
-                write_results(test_search(1e4), file_name, "Test_Search");
-                write_results(test_sum(1e4), file_name, "Test_Sum");
-                write_results(test_subtraction(1e4), file_name, "Test_Subtraction");
-                write_results(test_intersection(1e4), file_name, "Test_Intersection");
+                write_results(test_create(1e4), file_name, "TEST CREATE (N=1e4)");
+                write_results(test_insert(1e4), file_name, "TEST INSERT (N=1e4)");
+                write_results(test_search(1e4), file_name, "TEST SEARCH (N=1e4)");
+                write_results(test_sum(1e4), file_name, "TEST SUM (N=1e4)");
+                write_results(test_subtraction(1e4), file_name, "TEST SUBTRACTION (N=1e4)");
+                write_results(test_intersection(1e4), file_name, "TEST INTERSECTION (N=1e4)");
 
                 cout << "Tests successfully saved to " << file_name << endl;
                 break;
