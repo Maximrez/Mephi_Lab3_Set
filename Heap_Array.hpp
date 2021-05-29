@@ -28,6 +28,9 @@ template<class T>
 struct Heap_Array {
     vector<T> data; // у i наследники 2*i+1 и 2*i+2
 
+    Heap_Array() : data(vector<T>()) {};
+
+    /// Heap from Vector
     explicit Heap_Array(const vector<T> &vec) : data(vec) {
         if (!data.empty()) {
             sort(data.begin(), data.end(), comp<T>);
@@ -37,11 +40,11 @@ struct Heap_Array {
         }
     };
 
+    /// Копирующий конструктор
     Heap_Array(const Heap_Array<T> &heap) : data(heap.data) {}
 
-    Heap_Array() : data(vector<T>()) {};
-
-    explicit Heap_Array(const string &str, int check) {
+    /// Heap from string
+    explicit Heap_Array(const string &str, bool check) {
         vector<int> vec;
         for (int i = 0; i < str.size(); i++) {
             int j = i;
@@ -56,18 +59,20 @@ struct Heap_Array {
         *this = Heap_Array(vec);
     }
 
+    /// Вставка элемента
     void insert(T v);
 
+    /// Поиск элемента
     int search(T v, int it = 0) const;
 
+    /// Удаление элемента
     void remove(T v);
 
-
-    //void heapify(int it = 0);
     [[nodiscard]] inline bool check(int it) const {
         return it < data.size();//&& heap[it] != NULL
     }
 
+    /// Получение размера кучи
     [[nodiscard]] int size() const {
         return data.size();
     }
@@ -95,8 +100,8 @@ struct Heap_Array {
         return data[i];
     }
 
-    // == Обходы ==
-    // 1. КЛП = Корень Левый Правый
+    // Обходы
+    /// 1 - Корень Левый Правый
     void printNLR(int it, ostream &os) {
         os << data[it];
         if (check((it - 1) / 2))
@@ -125,7 +130,7 @@ struct Heap_Array {
             printNLR2(2 * it + 2, os);
     }
 
-    // 2. КПЛ = Корень Правый Левый
+    /// 2 - Корень Правый Левый
     void printNRL(int it, ostream &os) {
         os << data[it];
         if (check((it - 1) / 2))
@@ -138,7 +143,7 @@ struct Heap_Array {
             printNRL(2 * it + 1, os);
     }
 
-    // 3. ЛПК = Левый Правый Корень
+    /// 3 - Левый Правый Корень
     void printLRN(int it, ostream &os) {
         if (check(2 * it + 1))
             printLRN(2 * it + 1, os);
@@ -151,7 +156,7 @@ struct Heap_Array {
             os << " ";
     }
 
-    // 4. ЛКП = Левый Корень Правый
+    /// 4 - Левый Корень Правый
     void printLNR(int it, ostream &os) {
         if (check(2 * it + 1))
             printLNR(2 * it + 1, os);
@@ -164,7 +169,7 @@ struct Heap_Array {
             printLNR(2 * it + 2, os);
     }
 
-    // 5. ПЛК = Правый Левый Корень
+    /// 5 - Правый Левый Корень
     void printRLN(int it, ostream &os) {
         if (check(2 * it + 2))
             printRLN(2 * it + 2, os);
@@ -177,7 +182,7 @@ struct Heap_Array {
             os << " ";
     }
 
-    // 6. ПКЛ = Правый Корень Левый
+    /// 6 - Правый Корень Левый
     void printRNL(int it, ostream &os) {
         if (check(2 * it + 2))
             printRNL(2 * it + 2, os);
@@ -190,13 +195,24 @@ struct Heap_Array {
             printRNL(2 * it + 1, os);
     }
 
+    /// Получение поддерева
     Heap_Array<T> &sub_heap(T v) const;
 
     void app_child(int it, vector<T> &vec) const;
 
+    /// Равенства всех наследников
     bool equal_child(int it1, int it2, const Heap_Array<T> &heap) const;
 
+    /// Поиск вхождения поддерева
     bool search_heap(const Heap_Array<T> &heap) const;
+
+    /// Вывод кучи
+    inline friend ostream &operator<<(ostream &os, const Heap_Array &heap) {
+        os << heap.data[0] << " ";
+        for (int i = 1; i < heap.data.size(); i++)
+            os << heap.data[i] << "{" << heap.data[(i - 1) / 2] << "} ";
+        return os;
+    }
 
     ~Heap_Array<T>() = default;
 };
@@ -205,21 +221,17 @@ template<class T>
 void Heap_Array<T>::insert(T v) {
     if (search(v) >= 0)
         return;
-    int i, parent;
     data.emplace_back(v);
-    i = data.size() - 1;
-    parent = (i - 1) / 2;
-    while (parent >= 0 && i > 0) {
-        if (data[i] > data[parent])
-            swap(data[i], data[parent]);
-        else
-            break;
-        check_brother(i);
+    int i = data.size() - 1;
+    int parent = (i - 1) / 2;
+    while (i > 0 && data[i] > data[parent]) {
+        swap(data[i], data[parent]);
+        //check_brother(i);
         i = parent;
         parent = (i - 1) / 2;
     }
-    check_brother(i);
-    check_brother((i - 1) / 2);
+    //check_brother(i);
+    //check_brother((i - 1) / 2);
 }
 
 template<class T>
@@ -243,29 +255,9 @@ template<class T>
 void Heap_Array<T>::remove(T v) {
     int it = search(v);
     if (it != -1) {
-        data.erase(data.begin() + search(v));
+        data.erase(data.begin() + it);
         *this = Heap_Array(data);
     }
-    /*
-    int it = search(v);
-    while (check(2 * it + 1) && check(2 * it + 2))
-    {
-        swap(heap[it], heap[2 * it + 2]);
-        //check_brother((it - 1) / 2);
-        it = 2 * it + 2;
-    }
-    if (check(2 * it + 1))
-    {
-        swap(heap[2 * it + 1], heap[it]);
-        //heap.erase(heap.begin() + 2 * it + 1);
-        heap[2 * it + 1] = NULL;
-    } else
-    {
-        check_brother((it - 1) / 2);
-        //heap.erase(heap.begin() + it);
-        heap[it] = NULL;
-    }*/
-
 }
 
 
