@@ -1,30 +1,30 @@
 TEST CREATE (N=1e4)
-Nodes: 2081 microseconds
-Array: 3784 microseconds
+Nodes: 1916 microseconds
+Array: 3364 microseconds
 Nodes is 1.8 times faster than a array!
 
 TEST INSERT (N=1e4)
-Nodes: 1964 microseconds
-Array: 588693 microseconds
-Nodes is 299.7 times faster than a array!
+Nodes: 1853 microseconds
+Array: 541350 microseconds
+Nodes is 292.1 times faster than a array!
 
 TEST SEARCH (N=1e4)
-Nodes: 135714 microseconds
-Array: 560207 microseconds
-Nodes is 4.1 times faster than a array!
+Nodes: 118699 microseconds
+Array: 496999 microseconds
+Nodes is 4.2 times faster than a array!
 
 TEST SUM (N=1e4)
-Nodes: 15837 microseconds
-Array: 829571 microseconds
-Nodes is 52.4 times faster than a array!
+Nodes: 12982 microseconds
+Array: 856639 microseconds
+Nodes is 66.0 times faster than a array!
 
 TEST SUBTRACTION (N=1e4)
-Nodes: 352423 microseconds
-Array: 770023 microseconds
-Nodes is 2.2 times faster than a array!
+Nodes: 344320 microseconds
+Array: 726434 microseconds
+Nodes is 2.1 times faster than a array!
 
 TEST INTERSECTION (N=1e4)
-Nodes: 366051 microseconds
-Array: 611571 microseconds
+Nodes: 343954 microseconds
+Array: 595796 microseconds
 Nodes is 1.7 times faster than a array!
 
