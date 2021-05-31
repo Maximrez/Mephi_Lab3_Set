@@ -239,6 +239,7 @@ int main() {
                 write_results(test_create(1e4), file_name, "TEST CREATE (N=1e4)");
                 write_results(test_insert(1e4), file_name, "TEST INSERT (N=1e4)");
                 write_results(test_search(1e4), file_name, "TEST SEARCH (N=1e4)");
+                write_results(test_remove(1e3), file_name, "TEST REMOVE (N=1e3)");
                 write_results(test_sum(1e4), file_name, "TEST SUM (N=1e4)");
                 write_results(test_subtraction(1e4), file_name, "TEST SUBTRACTION (N=1e4)");
                 write_results(test_intersection(1e4), file_name, "TEST INTERSECTION (N=1e4)");

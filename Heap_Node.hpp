@@ -35,8 +35,6 @@ struct Node {
 
     /// Вставка элемента
     void insert(T target) {
-        if (target == value)
-            return;
         if (!left) {
             left = new Node<T>(target, this, nullptr, nullptr);
             if (right && (right->value < left->value)) swap(left, right);
@@ -44,7 +42,7 @@ struct Node {
         }
         if (!right) {
             right = new Node<T>(target, this, nullptr, nullptr);
-            if (right->value < left->value) swap(left, right);
+            if (left && (right->value < left->value)) swap(left, right);
             return;
         }
         if (target <= left->value) {
@@ -152,11 +150,11 @@ struct Node {
         }
         parent = nullptr;
         if (left) {
-            left->parent = nullptr;
+            if (left->parent == this) left->parent = nullptr;
             left = nullptr;
         }
         if (right) {
-            right->parent = nullptr;
+            if (right->parent == this) right->parent = nullptr;
             right = nullptr;
         }
     }
@@ -228,8 +226,10 @@ struct Heap_Node {
             root = new Node<T>(target, nullptr, nullptr, nullptr);
             return;
         }
+
         if (target <= root->value) {
-            root->insert(target);
+            if (!search(target))
+                root->insert(target);
         } else {
             auto *new_node = new Node<T>(target, nullptr, root, nullptr);
             root->parent = new_node;
@@ -242,43 +242,45 @@ struct Heap_Node {
         if (!root) return;
         if (target > root->value) return;
         Node<T> *node = root->search(target);
-        if (node) {
-            while (node->left && node->right) {
-                swap(node->value, node->right->value);
-                node = node->right;
-            }
-            if (node->parent) {
-                if (node->left) {
-                    if (node->parent->right && node->parent->right == node) {
-                        node->parent->right = node->left;
-                        node->left->parent = node->parent;
-                    } else {
-                        node->parent->left = node->left;
-                        node->left->parent = node->parent;
-                    }
-                }
-                if (node->right) {
-                    if (node->parent->right && node->parent->right == node) {
-                        node->parent->right = node->right;
-                        node->right->parent = node->parent;
-                    } else {
-                        node->parent->left = node->right;
-                        node->right->parent = node->parent;
-                    }
-                }
-            } else {
-                if (!node->left && !node->right) {
-                    root = nullptr;
-                }
-                if (node->left) {
-                    root = node->left;
-                }
-                if (node->right) {
-                    root = node->right;
-                }
-            }
-            delete node;
+        if (!node)
+            return;
+        while (node->left && node->right) {
+            swap(node->value, node->right->value);
+            node = node->right;
         }
+        if (node->parent) {
+            if (node->left) {
+                if (node->parent->right && node->parent->right == node) {
+                    node->parent->right = node->left;
+                    node->left->parent = node->parent;
+                }
+                if (node->parent->left && node->parent->left == node) {
+                    node->parent->left = node->left;
+                    node->left->parent = node->parent;
+                }
+            }
+            if (node->right) {
+                if (node->parent->right && node->parent->right == node) {
+                    node->parent->right = node->right;
+                    node->right->parent = node->parent;
+                }
+                if (node->parent->left && node->parent->left == node) {
+                    node->parent->left = node->right;
+                    node->right->parent = node->parent;
+                }
+            }
+        } else {
+            if (!node->left && !node->right) {
+                root = nullptr;
+            }
+            if (node->left) {
+                root = node->left;
+            }
+            if (node->right) {
+                root = node->right;
+            }
+        }
+        delete node;
     }
 
     /// Обходы
