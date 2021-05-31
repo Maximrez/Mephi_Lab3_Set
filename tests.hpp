@@ -64,8 +64,34 @@ pair<int, int> test_insert(const int n) {
         set_array.insert(values[i]);
     endTime = chrono::steady_clock::now();
     int array_time = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
+
     assert(set_node == target);
     assert(set_array == target);
+
+    return {node_time, array_time};
+}
+
+pair<int, int> test_search(const int n) {
+    default_random_engine generator;
+    uniform_int_distribution<int> distribution(-Max, Max);
+    vector<int> values(n);
+    for (int i = 0; i < n; i++) {
+        int value = distribution(generator);
+        values[i] = value;
+    }
+    Set_Node<int> set_node(values);
+    Set_Array<int> set_array(values);
+    auto startTime = chrono::steady_clock::now();
+    for (int i = 0; i < n; i++)
+        assert(true == set_node.search(values[i]));
+    auto endTime = chrono::steady_clock::now();
+    int node_time = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
+
+    startTime = chrono::steady_clock::now();
+    for (int i = 0; i < n; i++)
+        assert(true == set_array.search(values[i]));
+    endTime = chrono::steady_clock::now();
+    int array_time = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
 
     return {node_time, array_time};
 }
@@ -94,31 +120,6 @@ pair<int, int> test_remove(const int n) {
 
     assert(set_node.data.root == nullptr);
     assert(set_array.size() == 0);
-
-    return {node_time, array_time};
-}
-
-pair<int, int> test_search(const int n) {
-    default_random_engine generator;
-    uniform_int_distribution<int> distribution(-Max, Max);
-    vector<int> values(n);
-    for (int i = 0; i < n; i++) {
-        int value = distribution(generator);
-        values[i] = value;
-    }
-    Set_Node<int> set_node(values);
-    Set_Array<int> set_array(values);
-    auto startTime = chrono::steady_clock::now();
-    for (int i = 0; i < n; i++)
-        assert(true == set_node.search(values[i]));
-    auto endTime = chrono::steady_clock::now();
-    int node_time = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
-
-    startTime = chrono::steady_clock::now();
-    for (int i = 0; i < n; i++)
-        assert(true == set_array.search(values[i]));
-    endTime = chrono::steady_clock::now();
-    int array_time = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
 
     return {node_time, array_time};
 }
@@ -156,6 +157,7 @@ pair<int, int> test_sum(const int n) {
     set1.insert(set2.begin(), set2.end());
     assert(set_node + sub_node == set1);
     assert(set_array + sub_array == set1);
+
     return {node_time, array_time};
 }
 
@@ -190,6 +192,8 @@ pair<int, int> test_subtraction(const int n) {
     endTime = chrono::steady_clock::now();
     int array_time = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
 
+    assert(set_node.getSize() == set_array.size());
+
     return {node_time, array_time};
 }
 
@@ -222,6 +226,8 @@ pair<int, int> test_intersection(const int n) {
     set_array * sub_array;
     endTime = chrono::steady_clock::now();
     int array_time = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
+
+    assert(set_node.getSize() == set_array.size());
 
     return {node_time, array_time};
 }
